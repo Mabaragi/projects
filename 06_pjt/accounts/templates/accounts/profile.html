@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{person.username}} 님의 프로필</h1>
+  <hr>
+  <div>
+    팔로잉 : {{person.followings.count}} | 팔로워 : {{person.followers.count}}
+  </div>
+  <hr>
+  <form action="{% url 'accounts:follow' person.pk %}">
+    {% csrf_token %}
+    {% if request.user in person.followers.all %}
+    <input type="submit" value="언팔로우">    
+    {% else %}
+    <input type="submit" value="팔로우">
+    {% endif %}
+  </form>
+  <hr>
+  <h2>{{person.username}}님이 작성한 글</h2>
+  <ul>
+    {% for movie in person.movie_set.all  %}
+    <li><a href="{% url 'movies:detail' movie.pk %}">{{movie.title}}</a></li>
+    {% endfor %}
+  </ul>
+  <hr>
+
+  {% if person.like_movies.all %}
+  <h2>{{person.username}}님이 좋아한 영화</h2>
+  <ul>
+    {% for movie in person.like_movies.all  %}
+    <li><a href="{% url 'movies:detail' movie.pk %}">{{movie.title}}</a></li>
+    {% endfor %}
+  </ul>
+  <hr>
+  {% else %}
+  <h2>{{person.username}}님은 아직 좋아하는 영화가 없습니다.</h2>
+  {% endif %}
+  <a href="{% url 'movies:index' %}">BACK</a>
+  
+{% endblock content %}
